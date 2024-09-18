@@ -22,16 +22,17 @@
             margin: 0 auto;
         }
 
-        /* Section Styles */
+        /* Section Styles with soft white background */
         .counter-section, .chronometer-section {
-            background-color: rgba(0, 61, 91, 0.85);
+            background-color: rgba(255, 255, 255, 0.9); /* Soft white background */
             margin: 10px 0;
             padding: 20px;
             width: 100%;
             text-align: center;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            border: 1px solid white;
+            border: 1px solid #ddd;
+            color: #333; /* Changed text color for contrast */
         }
 
         /* Header Flex Container */
@@ -48,7 +49,7 @@
             text-align: center;
         }
 
-        /* Animation for all buttons */
+        /* Button Animation */
         button {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -74,7 +75,7 @@
         }
 
         .copy-btn:hover {
-            transform: scale(1.1); /* Animation on hover */
+            transform: scale(1.1);
         }
 
         /* Tooltip with animation */
@@ -128,7 +129,7 @@
             font-size: 60px;
             border: none;
             background: transparent;
-            color: #fff;
+            color: #333; /* Changed text color */
             margin-bottom: 15px;
             outline: none;
         }
@@ -140,9 +141,9 @@
         }
 
         .counter-buttons button {
-            width: 90px; /* Made larger */
+            width: 90px;
             height: 60px;
-            font-size: 32px; /* Made larger */
+            font-size: 32px;
             cursor: pointer;
             border: none;
             border-radius: 8px;
@@ -155,11 +156,11 @@
             background-color: #FF6B6B;
         }
 
-        /* Reset Button Styling (Matching with the other buttons) */
+        /* Reset Button Styling */
         .reset-btn {
             background-color: #FFA45B;
-            width: 90px; /* Match the width of - and + buttons */
-            height: 60px; /* Match the height */
+            width: 90px;
+            height: 60px;
             font-size: 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -183,9 +184,9 @@
         }
 
         .chronometer-buttons button {
-            width: 110px; /* Made larger */
-            height: 60px; /* Made larger */
-            font-size: 24px; /* Made larger */
+            width: 110px;
+            height: 60px;
+            font-size: 24px;
             cursor: pointer;
             border: none;
             border-radius: 8px;
@@ -194,7 +195,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
-        /* Stop Button Styling */
         .chronometer-buttons .stop-btn {
             background-color: #FF4C4C;
             color: white;
@@ -210,10 +210,6 @@
 
         /* Responsive Design */
         @media screen and (max-width: 768px) {
-            .copy-btn {
-                margin-left: 5px;
-            }
-
             .counter input {
                 width: 180px;
                 font-size: 50px;
@@ -240,10 +236,6 @@
             .chronometer {
                 font-size: 2.2em;
             }
-
-            .section-header h2 {
-                font-size: 1.6em;
-            }
         }
 
         @media screen and (max-width: 480px) {
@@ -255,11 +247,6 @@
             .chronometer-buttons {
                 flex-direction: column;
                 gap: 10px;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: center;
             }
 
             .reset-btn {
@@ -276,10 +263,6 @@
 
             .chronometer {
                 font-size: 1.8em;
-            }
-
-            .section-header h2 {
-                font-size: 1.5em;
             }
         }
     </style>
@@ -312,7 +295,6 @@
                 <button onclick="startChronometer()">Start</button>
                 <button class="stop-btn" onclick="stopChronometer()">Stop</button>
             </div>
-            <!-- Reset button below the start and stop buttons -->
             <button class="reset-btn" onclick="resetChronometer()">Reset</button>
         </div>
     </div>
@@ -330,7 +312,6 @@
             loadChronometer();
         };
 
-        // Handle counter actions
         function handleCounter(id, action) {
             const input = document.getElementById(id);
             let count = parseInt(input.value) || 0;
@@ -351,7 +332,6 @@
             localStorage.setItem(id, count);
         }
 
-        // Handle manual input for counters
         function handleManualInput(id) {
             const input = document.getElementById(id);
             let count = parseInt(input.value);
@@ -368,7 +348,6 @@
         let chronometerTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
         let chronometerRunning = false;
 
-        // Start Chronometer
         function startChronometer() {
             if (chronometerRunning) return;
             chronometerRunning = true;
@@ -391,7 +370,6 @@
             }, 10);
         }
 
-        // Stop Chronometer
         function stopChronometer() {
             if (!chronometerRunning) return;
             chronometerRunning = false;
@@ -399,7 +377,6 @@
             saveChronometer();
         }
 
-        // Reset Chronometer
         function resetChronometer() {
             if (confirm("Are you sure you want to reset the chronometer?")) {
                 chronometerTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
@@ -408,7 +385,6 @@
             }
         }
 
-        // Update Chronometer Display (with hours)
         function updateChronometerDisplay() {
             const { hours, minutes, seconds, milliseconds } = chronometerTime;
             const formattedTime = 
@@ -419,7 +395,6 @@
             document.getElementById('chronometer').innerText = formattedTime;
         }
 
-        // Copy Chronometer Data
         function copyChronometer() {
             const time = document.getElementById('chronometer').innerText;
             navigator.clipboard.writeText(time).then(() => {
@@ -429,13 +404,11 @@
             });
         }
 
-        // Save Chronometer to localStorage
         function saveChronometer() {
             localStorage.setItem('chronometerTime', JSON.stringify(chronometerTime));
             localStorage.setItem('chronometerRunning', chronometerRunning);
         }
 
-        // Load Chronometer from localStorage
         function loadChronometer() {
             const savedTime = JSON.parse(localStorage.getItem('chronometerTime'));
             const wasRunning = JSON.parse(localStorage.getItem('chronometerRunning'));
@@ -450,7 +423,6 @@
             }
         }
 
-        // Prevent data loss on page unload
         window.addEventListener("beforeunload", function (e) {
             const confirmationMessage = 'Your data will be saved automatically.';
             (e || window.event).returnValue = confirmationMessage;

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Counters with Chronometer</title>
+    <!-- Link to Ubuntu font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: linear-gradient(to bottom, #003D5B, #25E2CC);
+            margin: 0;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .counter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Section Styles */
+        .counter-section, .chronometer-section {
+            background-color: rgba(0, 61, 91, 0.85);
+            margin: 10px 0;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: 1px solid white;
+        }
+
+        /* Header Flex Container */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        /* Animation for all buttons */
+        button {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.1); /* Slightly enlarges the button on hover */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Adds a deeper shadow effect */
+        }
+
+        /* Copy Button Styling */
+        .copy-btn {
+            background-color: #FFA45B;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.1); /* Animation on hover */
+        }
+
+        /* Tooltip with animation */
+        .copy-btn:hover::before {
+            content: "Copy to Clipboard";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards, fadeOut 0.3s 1.5s forwards;
+        }
+
+        /* Animation for tooltip */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) translateX(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(-50%);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Counter Styles */
+        .counter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .counter input {
+            width: 220px;
+            text-align: center;
+            font-size: 60px;
+            border: none;
+            background: transparent;
+            color: #fff;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .counter-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .counter-buttons button {
+            width: 90px; /* Made larger */
+            height: 60px;
+            font-size: 32px; /* Made larger */
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            background-color: #1DD3B0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .counter-buttons button.decrease {
+            background-color: #FF6B6B;
+        }
+
+        /* Reset Button Styling (Matching with the other buttons) */
+        .reset-btn {
+            background-color: #FFA45B;
+            width: 90px; /* Match the width of - and + buttons */
+            height: 60px; /* Match the height */
+            font-size: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            color: black;
+            margin-top: 15px;
+            border: none;
+        }
+
+        /* Chronometer Styles */
+        .chronometer {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .chronometer-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .chronometer-buttons button {
+            width: 110px; /* Made larger */
+            height: 60px; /* Made larger */
+            font-size: 24px; /* Made larger */
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            background-color: #1DD3B0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Stop Button Styling */
+        .chronometer-buttons .stop-btn {
+            background-color: #FF4C4C;
+            color: white;
+        }
+
+        /* Footer Styling */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: black;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .copy-btn {
+                margin-left: 5px;
+            }
+
+            .counter input {
+                width: 180px;
+                font-size: 50px;
+            }
+
+            .counter-buttons button {
+                width: 80px;
+                height: 55px;
+                font-size: 28px;
+            }
+
+            .reset-btn {
+                width: 80px;
+                height: 55px;
+                font-size: 18px;
+            }
+
+            .chronometer-buttons button {
+                width: 90px;
+                height: 55px;
+                font-size: 22px;
+            }
+
+            .chronometer {
+                font-size: 2.2em;
+            }
+
+            .section-header h2 {
+                font-size: 1.6em;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .counter-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .chronometer-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .reset-btn {
+                width: 80px;
+                height: 50px;
+                font-size: 16px;
+            }
+
+            .chronometer-buttons button {
+                width: 80px;
+                height: 50px;
+                font-size: 16px;
+            }
+
+            .chronometer {
+                font-size: 1.8em;
+            }
+
+            .section-header h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Counters Container -->
+    <div class="counter-container">
+        <!-- TR - Counter Section -->
+        <div class="counter-section" data-id="tracking">
+            <h2>TR - Counter</h2>
+            <div class="counter">
+                <input type="number" id="tracking" value="0" min="0" onchange="handleManualInput('tracking')">
+                <div class="counter-buttons">
+                    <button class="decrease" onclick="handleCounter('tracking', 'decrease')">-</button>
+                    <button class="increase" onclick="handleCounter('tracking', 'increase')">+</button>
+                </div>
+                <button class="reset-btn" onclick="handleCounter('tracking', 'reset')">Reset</button>
+            </div>
+        </div>
+
+        <!-- Chronometer Section -->
+        <div class="chronometer-section">
+            <div class="section-header">
+                <h2>Chronometer</h2>
+                <button class="copy-btn" onclick="copyChronometer()">📋</button>
+            </div>
+            <div class="chronometer" id="chronometer">00:00:00:000</div>
+            <div class="chronometer-buttons">
+                <button onclick="startChronometer()">Start</button>
+                <button class="stop-btn" onclick="stopChronometer()">Stop</button>
+            </div>
+            <!-- Reset button below the start and stop buttons -->
+            <button class="reset-btn" onclick="resetChronometer()">Reset</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p><small>Counter by - Deyan Simeonov</small></p>
+    </footer>
+
+    <script>
+        // Initialize counters on page load
+        window.onload = () => {
+            const trackingCount = parseInt(localStorage.getItem('tracking')) || 0;
+            document.getElementById('tracking').value = trackingCount;
+            loadChronometer();
+        };
+
+        // Handle counter actions
+        function handleCounter(id, action) {
+            const input = document.getElementById(id);
+            let count = parseInt(input.value) || 0;
+
+            if (action === 'increase') {
+                count += 1;
+            } else if (action === 'decrease' && count > 0) {
+                count -= 1;
+            } else if (action === 'reset') {
+                if (confirm("Are you sure you want to reset the count to zero?")) {
+                    count = 0;
+                } else {
+                    return;
+                }
+            }
+
+            input.value = count;
+            localStorage.setItem(id, count);
+        }
+
+        // Handle manual input for counters
+        function handleManualInput(id) {
+            const input = document.getElementById(id);
+            let count = parseInt(input.value);
+            if (isNaN(count) || count < 0) {
+                alert("Please enter a valid non-negative number.");
+                input.value = localStorage.getItem(id) || 0;
+                return;
+            }
+            localStorage.setItem(id, count);
+        }
+
+        // Chronometer Variables
+        let chronometerInterval;
+        let chronometerTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+        let chronometerRunning = false;
+
+        // Start Chronometer
+        function startChronometer() {
+            if (chronometerRunning) return;
+            chronometerRunning = true;
+            chronometerInterval = setInterval(() => {
+                chronometerTime.milliseconds += 10;
+                if (chronometerTime.milliseconds >= 1000) {
+                    chronometerTime.seconds += 1;
+                    chronometerTime.milliseconds = 0;
+                }
+                if (chronometerTime.seconds >= 60) {
+                    chronometerTime.minutes += 1;
+                    chronometerTime.seconds = 0;
+                }
+                if (chronometerTime.minutes >= 60) {
+                    chronometerTime.hours += 1;
+                    chronometerTime.minutes = 0;
+                }
+                updateChronometerDisplay();
+                saveChronometer();
+            }, 10);
+        }
+
+        // Stop Chronometer
+        function stopChronometer() {
+            if (!chronometerRunning) return;
+            chronometerRunning = false;
+            clearInterval(chronometerInterval);
+            saveChronometer();
+        }
+
+        // Reset Chronometer
+        function resetChronometer() {
+            if (confirm("Are you sure you want to reset the chronometer?")) {
+                chronometerTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+                updateChronometerDisplay();
+                saveChronometer();
+            }
+        }
+
+        // Update Chronometer Display (with hours)
+        function updateChronometerDisplay() {
+            const { hours, minutes, seconds, milliseconds } = chronometerTime;
+            const formattedTime = 
+                String(hours).padStart(2, '0') + ":" + 
+                String(minutes).padStart(2, '0') + ":" + 
+                String(seconds).padStart(2, '0') + ":" + 
+                String(milliseconds).padStart(3, '0');
+            document.getElementById('chronometer').innerText = formattedTime;
+        }
+
+        // Copy Chronometer Data
+        function copyChronometer() {
+            const time = document.getElementById('chronometer').innerText;
+            navigator.clipboard.writeText(time).then(() => {
+                alert(`Chronometer time "${time}" copied to clipboard!`);
+            }).catch(err => {
+                alert('Failed to copy!');
+            });
+        }
+
+        // Save Chronometer to localStorage
+        function saveChronometer() {
+            localStorage.setItem('chronometerTime', JSON.stringify(chronometerTime));
+            localStorage.setItem('chronometerRunning', chronometerRunning);
+        }
+
+        // Load Chronometer from localStorage
+        function loadChronometer() {
+            const savedTime = JSON.parse(localStorage.getItem('chronometerTime'));
+            const wasRunning = JSON.parse(localStorage.getItem('chronometerRunning'));
+
+            if (savedTime) {
+                chronometerTime = savedTime;
+                updateChronometerDisplay();
+            }
+
+            if (wasRunning) {
+                startChronometer();
+            }
+        }
+
+        // Prevent data loss on page unload
+        window.addEventListener("beforeunload", function (e) {
+            const confirmationMessage = 'Your data will be saved automatically.';
+            (e || window.event).returnValue = confirmationMessage;
+            return confirmationMessage;
+        });
+    </script>
+
+</body>
+</html>

@@ -6,12 +6,81 @@
     <!-- Link to Ubuntu font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
     <style>
+        /* Default Theme Variables */
+        :root {
+            --bg-gradient: linear-gradient(to bottom, #003D5B, #25E2CC);
+            --text-color: #ffffff;
+            --section-bg-color: rgba(255, 255, 255, 0.9);
+            --section-border-color: #dddddd;
+            --section-text-color: #333333;
+            --button-bg-color: #1DD3B0;
+            --button-decrease-bg-color: #FF6B6B;
+            --button-reset-bg-color: #FFA45B;
+            --button-reset-text-color: #000000;
+            --chronometer-stop-bg-color: #FF4C4C;
+            --footer-text-color: #000000;
+            --copy-btn-bg-color: #FFA45B;
+            --copy-btn-text-color: #ffffff;
+        }
+
+        /* Dark Theme 1 */
+        .theme-dark1 {
+            --bg-gradient: linear-gradient(to bottom, #1e1e2f, #9a8c98);
+            --text-color: #e0e0e0;
+            --section-bg-color: rgba(30, 30, 47, 0.9);
+            --section-border-color: #5a5a7f;
+            --section-text-color: #e0e0e0;
+            --button-bg-color: #6a1b9a;
+            --button-decrease-bg-color: #c62828;
+            --button-reset-bg-color: #ff8f00;
+            --button-reset-text-color: #ffffff;
+            --chronometer-stop-bg-color: #d32f2f;
+            --footer-text-color: #e0e0e0;
+            --copy-btn-bg-color: #ff8f00;
+            --copy-btn-text-color: #ffffff;
+        }
+
+        /* Dark Theme 2 */
+        .theme-dark2 {
+            --bg-gradient: linear-gradient(to bottom, #2c3e50, #34495e);
+            --text-color: #ecf0f1;
+            --section-bg-color: rgba(44, 62, 80, 0.9);
+            --section-border-color: #7f8c8d;
+            --section-text-color: #ecf0f1;
+            --button-bg-color: #2980b9;
+            --button-decrease-bg-color: #c0392b;
+            --button-reset-bg-color: #27ae60;
+            --button-reset-text-color: #ffffff;
+            --chronometer-stop-bg-color: #c0392b;
+            --footer-text-color: #ecf0f1;
+            --copy-btn-bg-color: #27ae60;
+            --copy-btn-text-color: #ffffff;
+        }
+
+        /* Dark Theme 3 */
+        .theme-dark3 {
+            --bg-gradient: linear-gradient(to bottom, #000000, #434343);
+            --text-color: #f5f5f5;
+            --section-bg-color: rgba(0, 0, 0, 0.9);
+            --section-border-color: #555555;
+            --section-text-color: #f5f5f5;
+            --button-bg-color: #8e44ad;
+            --button-decrease-bg-color: #e74c3c;
+            --button-reset-bg-color: #f1c40f;
+            --button-reset-text-color: #000000;
+            --chronometer-stop-bg-color: #e74c3c;
+            --footer-text-color: #f5f5f5;
+            --copy-btn-bg-color: #f1c40f;
+            --copy-btn-text-color: #000000;
+        }
+
         body {
             font-family: 'Ubuntu', sans-serif;
-            background: linear-gradient(to bottom, #003D5B, #25E2CC);
+            background: var(--bg-gradient);
             margin: 0;
             padding: 20px;
-            color: #fff;
+            color: var(--text-color);
+            transition: background 0.5s, color 0.5s;
         }
 
         .counter-container {
@@ -22,17 +91,18 @@
             margin: 0 auto;
         }
 
-        /* Section Styles with soft white background */
+        /* Section Styles with background based on theme */
         .counter-section, .chronometer-section {
-            background-color: rgba(255, 255, 255, 0.9); /* Soft white background */
+            background-color: var(--section-bg-color);
             margin: 10px 0;
             padding: 20px;
             width: 100%;
             text-align: center;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            border: 1px solid #ddd;
-            color: #333; /* Changed text color for contrast */
+            border: 1px solid var(--section-border-color);
+            color: var(--section-text-color);
+            transition: background-color 0.5s, border-color 0.5s, color 0.5s;
         }
 
         /* Header Flex Container */
@@ -40,6 +110,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
             margin-bottom: 15px;
         }
 
@@ -51,7 +122,7 @@
 
         /* Button Animation */
         button {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s, color 0.5s;
         }
 
         button:hover {
@@ -61,7 +132,8 @@
 
         /* Copy Button Styling */
         .copy-btn {
-            background-color: #FFA45B;
+            background-color: var(--copy-btn-bg-color);
+            color: var(--copy-btn-text-color);
             border: none;
             border-radius: 50%;
             width: 35px;
@@ -71,21 +143,21 @@
             margin-left: 10px;
             position: relative;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.5s, color 0.5s;
         }
 
         .copy-btn:hover {
             transform: scale(1.1);
         }
 
-        /* Tooltip with animation */
+        /* Tooltip for Copy Button */
         .copy-btn:hover::before {
-            content: "Copy to Clipboard";
+            content: attr(data-tooltip);
             position: absolute;
-            top: -30px;
+            top: -35px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #333;
+            background-color: rgba(0, 0, 0, 0.8);
             color: #fff;
             padding: 5px 10px;
             border-radius: 5px;
@@ -93,6 +165,56 @@
             font-size: 12px;
             opacity: 0;
             animation: fadeIn 0.3s forwards, fadeOut 0.3s 1.5s forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Theme Switcher Button */
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: background-color 0.5s, color 0.5s, transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .theme-switcher:hover {
+            transform: scale(1.1);
+        }
+
+        /* Tooltip for Theme Switcher */
+        .theme-switcher::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 50%;
+            left: 60px;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .theme-switcher:hover::after {
+            opacity: 1;
         }
 
         /* Animation for tooltip */
@@ -129,9 +251,10 @@
             font-size: 60px;
             border: none;
             background: transparent;
-            color: #333; /* Changed text color */
+            color: var(--section-text-color);
             margin-bottom: 15px;
             outline: none;
+            transition: color 0.5s;
         }
 
         .counter-buttons {
@@ -147,33 +270,37 @@
             cursor: pointer;
             border: none;
             border-radius: 8px;
-            color: black;
-            background-color: #1DD3B0;
+            color: #000000;
+            background-color: var(--button-bg-color);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.5s, color 0.5s;
         }
 
         .counter-buttons button.decrease {
-            background-color: #FF6B6B;
+            background-color: var(--button-decrease-bg-color);
         }
 
         /* Reset Button Styling */
         .reset-btn {
-            background-color: #FFA45B;
+            background-color: var(--button-reset-bg-color);
+            color: var(--button-reset-text-color);
             width: 90px;
             height: 60px;
             font-size: 20px;
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            color: black;
             margin-top: 15px;
             border: none;
+            transition: background-color 0.5s, color 0.5s;
         }
 
         /* Chronometer Styles */
         .chronometer {
             font-size: 2.5em;
             margin-bottom: 20px;
+            transition: color 0.5s;
+            color: var(--section-text-color);
         }
 
         .chronometer-buttons {
@@ -190,14 +317,16 @@
             cursor: pointer;
             border: none;
             border-radius: 8px;
-            color: black;
-            background-color: #1DD3B0;
+            color: #000000;
+            background-color: var(--button-bg-color);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.5s, color 0.5s;
         }
 
         .chronometer-buttons .stop-btn {
-            background-color: #FF4C4C;
-            color: white;
+            background-color: var(--chronometer-stop-bg-color);
+            color: #ffffff;
+            transition: background-color 0.5s, color 0.5s;
         }
 
         /* Footer Styling */
@@ -205,7 +334,8 @@
             text-align: center;
             margin-top: 30px;
             font-size: 0.9em;
-            color: black;
+            color: var(--footer-text-color);
+            transition: color 0.5s;
         }
 
         /* Responsive Design */
@@ -264,10 +394,23 @@
             .chronometer {
                 font-size: 1.8em;
             }
+
+            .theme-switcher {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .theme-switcher::after {
+                left: 50px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Theme Switcher Button -->
+    <button class="theme-switcher" id="themeSwitcher" data-tooltip="Default Theme">★</button>
 
     <!-- Counters Container -->
     <div class="counter-container">
@@ -288,7 +431,7 @@
         <div class="chronometer-section">
             <div class="section-header">
                 <h2>Chronometer</h2>
-                <button class="copy-btn" onclick="copyChronometer()">📋</button>
+                <button class="copy-btn" onclick="copyChronometer()" data-tooltip="Copy to Clipboard">📋</button>
             </div>
             <div class="chronometer" id="chronometer">00:00:00:000</div>
             <div class="chronometer-buttons">
@@ -305,12 +448,64 @@
     </footer>
 
     <script>
-        // Initialize counters on page load
+        // Theme Management
+        const themes = ['default', 'dark1', 'dark2', 'dark3'];
+        let currentThemeIndex = 0;
+
+        const themeSwitcher = document.getElementById('themeSwitcher');
+
+        // Load saved theme on page load
         window.onload = () => {
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (savedTheme) {
+                currentThemeIndex = themes.indexOf(savedTheme);
+                if (currentThemeIndex === -1) currentThemeIndex = 0;
+                applyTheme(themes[currentThemeIndex]);
+            } else {
+                applyTheme('default');
+            }
+
+            // Initialize counters
             const trackingCount = parseInt(localStorage.getItem('tracking')) || 0;
             document.getElementById('tracking').value = trackingCount;
             loadChronometer();
         };
+
+        function applyTheme(theme) {
+            // Remove all theme classes except default
+            document.body.classList.remove(...themes.filter(t => t !== 'default').map(t => `theme-${t}`));
+            
+            if (theme !== 'default') {
+                document.body.classList.add(`theme-${theme}`);
+            }
+
+            // Update theme switcher tooltip and icon
+            if (theme === 'default') {
+                themeSwitcher.innerHTML = '★';
+                themeSwitcher.setAttribute('data-tooltip', 'Default Theme');
+            } else if (theme === 'dark1') {
+                themeSwitcher.innerHTML = '🌙';
+                themeSwitcher.setAttribute('data-tooltip', 'Dark Theme 1');
+            } else if (theme === 'dark2') {
+                themeSwitcher.innerHTML = '🌑';
+                themeSwitcher.setAttribute('data-tooltip', 'Dark Theme 2');
+            } else if (theme === 'dark3') {
+                themeSwitcher.innerHTML = '🌓';
+                themeSwitcher.setAttribute('data-tooltip', 'Dark Theme 3');
+            }
+
+            // Save the selected theme
+            localStorage.setItem('selectedTheme', theme);
+        }
+
+        // Theme switcher button click event
+        themeSwitcher.addEventListener('click', () => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            applyTheme(themes[currentThemeIndex]);
+        });
+
+        // Initialize counters on page load
+        // (Already handled in window.onload)
 
         function handleCounter(id, action) {
             const input = document.getElementById(id);

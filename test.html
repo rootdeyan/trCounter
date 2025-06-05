@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Counters with Chronometer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(to bottom, #0a0e31, #3a7bd5);
+            --text-color: #e6e6e6;
+            --section-bg-color: rgba(255, 255, 255, 0.1);
+            --section-border-color: #4a4a8c;
+            --section-text-color: #ffffff;
+            --button-bg-color: #00c4cc;
+            --button-decrease-bg-color: #ff4d4d;
+            --button-reset-bg-color: #ff9500;
+            --button-reset-text-color: #ffffff;
+            --chronometer-stop-bg-color: #ff2d55;
+            --footer-text-color: #b3b3b3;
+            --copy-btn-bg-color: #ff9500;
+            --copy-btn-text-color: #ffffff;
+            --button-text-color: #ffffff;
+        }
+
+        .theme-dark1 {
+            --bg-gradient: linear-gradient(to bottom, #1c2526, #4a6366);
+            --text-color: #d9d9d9;
+            --section-bg-color: rgba(28, 37, 38, 0.8);
+            --section-border-color: #6b8294;
+            --section-text-color: #d9d9d9;
+            --button-bg-color: #2a9d8f;
+            --button-decrease-bg-color: #e63946;
+            --button-reset-bg-color: #f4a261;
+            --button-reset-text-color: #ffffff;
+            --chronometer-stop-bg-color: #e63946;
+            --footer-text-color: #d9d9d9;
+            --copy-btn-bg-color: #f4a261;
+            --copy-btn-text-color: #ffffff;
+            --button-text-color: #ffffff;
+        }
+
+        .theme-dark2 {
+            --bg-gradient: linear-gradient(to bottom, #2d3436, #636e72);
+            --text-color: #dfe6e9;
+            --section-bg-color: rgba(45, 52, 54, 0.8);
+            --section-border-color: #b2bec3;
+            --section-text-color: #dfe6e9;
+            --button-bg-color: #0984e3;
+            --button-decrease-bg-color: #d63031;
+            --button-reset-bg-color: #00b894;
+            --button-reset-text-color: #ffffff;
+            --chronometer-stop-bg-color: #d63031;
+            --footer-text-color: #dfe6e9;
+            --copy-btn-bg-color: #00b894;
+            --copy-btn-text-color: #ffffff;
+            --button-text-color: #ffffff;
+        }
+
+        .theme-dark3 {
+            --bg-gradient: linear-gradient(to bottom, #1a1a1a, #2d3436);
+            --text-color: #dcdcdc;
+            --section-bg-color: rgba(26, 26, 26, 0.9);
+            --section-border-color: #636e72;
+            --section-text-color: #dcdcdc;
+            --button-bg-color: #6d214f;
+            --button-decrease-bg-color: #bc2c1a;
+            --button-reset-bg-color: #feca57;
+            --button-reset-text-color: #ffffff;
+            --chronometer-stop-bg-color: #bc2c1a;
+            --footer-text-color: #dcdcdc;
+            --copy-btn-bg-color: #feca57;
+            --copy-btn-text-color: #ffffff;
+            --button-text-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            transition: background 0.5s, color 0.5s;
+        }
+
+        .counter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .counter-section, .chronometer-section {
+            background-color: var(--section-bg-color);
+            margin: 10px 0;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            border-radius: 12px;
+            border: 1px solid var(--section-border-color);
+            color: var(--section-text-color);
+            transition: background-color 0.5s, border-color 0.5s, color 0.5s;
+            backdrop-filter: blur(5px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        button {
+            transition: transform 0.2s ease, background-color 0.5s, color 0.5s;
+            background: var(--button-bg-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 -2px 5px rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.3s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .copy-btn {
+            background: var(--copy-btn-bg-color);
+            color: var(--copy-btn-text-color);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards, fadeOut 0.3s 1.5s forwards;
+            pointer-events: none;
+        }
+
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--button-bg-color);
+            color: var(--text-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 -2px 5px rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.4);
+        }
+
+        .theme-switcher::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.3s;
+        }
+
+        .theme-switcher:hover::before {
+            left: 100%;
+        }
+
+        .theme-switcher::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 50%;
+            left: -100px;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .theme-switcher:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px) translateX(-50%); }
+            to { opacity: 1; transform: translateY(0) translateX(-50%); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .counter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .counter input {
+            width: 220px;
+            text-align: center;
+            font-size: 60px;
+            border: none;
+            background: transparent;
+            color: var(--section-text-color);
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .counter-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .counter-buttons button {
+            width: 90px;
+            height: 60px;
+            font-size: 32px;
+        }
+
+        .counter-buttons button.decrease {
+            background: var(--button-decrease-bg-color);
+        }
+
+        .reset-btn {
+            background: var(--button-reset-bg-color);
+            color: var(--button-reset-text-color);
+            width: 90px;
+            height: 60px;
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        .chronometer {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: var(--section-text-color);
+        }
+
+        .chronometer-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .chronometer-buttons button {
+            width: 110px;
+            height: 60px;
+            font-size: 24px;
+        }
+
+        .chronometer-buttons .stop-btn {
+            background: var(--chronometer-stop-bg-color);
+            color: #ffffff;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: var(--footer-text-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            .counter input { width: 180px; font-size: 50px; }
+            .counter-buttons button { width: 80px; height: 55px; font-size: 28px; }
+            .reset-btn { width: 80px; height: 55px; font-size: 18px; }
+            .chronometer-buttons button { width: 90px; height: 55px; font-size: 22px; }
+            .chronometer { font-size: 2.2em; }
+            .theme-switcher { width: 40px; height: 40px; font-size: 20px; }
+            .theme-switcher::after { left: -90px; }
+        }
+
+        @media screen and (max-width: 480px) {
+            .counter-buttons, .chronometer-buttons { flex-direction: column; gap: 10px; }
+            .reset-btn { width: 80px; height: 50px; font-size: 16px; }
+            .chronometer-buttons button { width: 80px; height: 50px; font-size: 16px; }
+            .chronometer { font-size: 1.8em; }
+            .theme-switcher { width: 40px; height: 40px; font-size: 20px; }
+            .theme-switcher::after { left: -90px; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-switcher" id="themeSwitcher" data-tooltip="Default Theme">
+        <i class="fas fa-sun"></i>
+    </button>
+    <div class="counter-container">
+        <div class="counter-section" data-id="tracking">
+            <h2>TR - Counter</h2>
+            <div class="counter">
+                <input type="number" id="tracking" value="0" min="0" onchange="handleManualInput('tracking')">
+                <div class="counter-buttons">
+                    <button class="decrease" onclick="handleCounter('tracking', 'decrease')">-</button>
+                    <button class="increase" onclick="handleCounter('tracking', 'increase')">+</button>
+                </div>
+                <button class="reset-btn" onclick="handleCounter('tracking', 'reset')">Reset</button>
+            </div>
+        </div>
+        <div class="chronometer-section">
+            <div class="section-header">
+                <h2>Chronometer</h2>
+                <button class="copy-btn" onclick="copyChronometer()" data-tooltip="Copy to Clipboard">📋</button>
+            </div>
+            <div class="chronometer" id="chronometer">00:00:00:000</div>
+            <div class="chronometer-buttons">
+                <button onclick="startChronometer()">Start</button>
+                <button class="stop-btn" onclick="stopChronometer()">Stop</button>
+            </div>
+            <button class="reset-btn" onclick="resetChronometer()">Reset</button>
+        </div>
+    </div>
+    <footer>
+        <p><small>Counter by - Deyan Simeonov</small></p>
+    </footer>
+    <script>
+        const themes = ['default', 'dark1', 'dark2', 'dark3'];
+        let currentThemeIndex = 0;
+        const themeSwitcher = document.getElementById('themeSwitcher');
+
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (savedTheme) {
+                currentThemeIndex = themes.indexOf(savedTheme);
+                if (currentThemeIndex === -1) currentThemeIndex = 0;
+                applyTheme(themes[currentThemeIndex]);
+            } else {
+                applyTheme('default');
+            }
+            const trackingCount = parseInt(localStorage.getItem('tracking')) || 0;
+            document.getElementById('tracking').value = trackingCount;
+            loadChronometer();
+        };
+
+        function applyTheme(theme) {
+            document.body.classList.remove(...themes.filter(t => t !== 'default').map(t => `theme-${t}`));
+            if (theme !== 'default') document.body.classList.add(`theme-${theme}`);
+            themeSwitcher.innerHTML = theme === 'default' ? '<i class="fas fa-sun"></i>' :
+                                     theme === 'dark1' ? '<i class="fas fa-moon"></i>' :
+                                     theme === 'dark2' ? '<i class="fas fa-cloud-moon"></i>' :
+                                     '<i class="fas fa-meteor"></i>';
+            themeSwitcher.setAttribute('data-tooltip', theme === 'default' ? 'Default Theme' :
+                                      theme === 'dark1' ? 'Dark Theme 1' :
+                                      theme === 'dark2' ? 'Dark Theme 2' : 'Dark Theme 3');
+            localStorage.setItem('selectedTheme', theme);
+        }
+
+        themeSwitcher.addEventListener('click', () => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            applyTheme(themes[currentThemeIndex]);
+        });
+
+        function handleCounter(id, action) {
+            const input = document.getElementById(id);
+            let count = parseInt(input.value) || 0;
+            if (action === 'increase') count += 1;
+            else if (action === 'decrease' && count > 0) count -= 1;
+            else if (action === 'reset') {
+                if (confirm("Are you sure you want to reset the count to zero?")) count = 0;
+                else return;
+            }
+            input.value = count;
+            localStorage.setItem(id, count);
+        }
+
+        function handleManualInput(id) {
+            const input = document.getElementById(id);
+            let count = parseInt(input.value);
+            if (isNaN(count) || count < 0) {
+                alert("Please enter a valid non-negative number.");
+                input.value = localStorage.getItem(id) || 0;
+                return;
+            }
+            localStorage.setItem(id, count);
+        }
+
+        let chronometerInterval;
+        let chronometerTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+        let chronometerRunning = false;
+
+        function startChronometer() {
+            if (chronometerRunning) return;
+            chronometerRunning = true;
+            chronometerInterval = setInterval(() => {
+                chronometerTime.milliseconds += 10;
+                if (chronometerTime.milliseconds >= 1000) {
+                    chronometerTime.seconds += 1;
+                    chronometerTime.milliseconds = 0;
+                }
+                if (chronometerTime.seconds >= 60) {
+                    chronometerTime.minutes += 1;
+                    chronometerTime.seconds = 0;
+                }
+                if (chronometerTime.minutes >= 60) {
+                    chronometerTime.hours += 1;
+                    chronometerTime.minutes = 0;
+                }
+                updateChronometerDisplay();
+                saveChronometer();
+            }, 10);
+        }
+
+        function stopChronometer() {
+            if (!chronometerRunning) return;
+            chronometerRunning = false;
+            clearInterval(chronometerInterval);
+            saveChronometer();
+        }
+
+        function resetChronometer() {
+            if (confirm("Are you sure you want to reset the chronometer?")) {
+                chronometerTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+                updateChronometerDisplay();
+                saveChronometer();
+            }
+        }
+
+        function updateChronometerDisplay() {
+            const { hours, minutes, seconds, milliseconds } = chronometerTime;
+            const formattedTime = 
+                String(hours).padStart(2, '0') + ":" + 
+                String(minutes).padStart(2, '0') + ":" + 
+                String(seconds).padStart(2, '0') + ":" + 
+                String(milliseconds).padStart(3, '0');
+            document.getElementById('chronometer').innerText = formattedTime;
+        }
+
+        function copyChronometer() {
+            const time = document.getElementById('chronometer').innerText;
+            navigator.clipboard.writeText(time).then(() => {
+                alert(`Chronometer time "${time}" copied to clipboard!`);
+            }).catch(err => {
+                alert('Failed to copy!');
+            });
+        }
+
+        function saveChronometer() {
+            localStorage.setItem('chronometerTime', JSON.stringify(chronometerTime));
+            localStorage.setItem('chronometerRunning', chronometerRunning);
+        }
+
+        function loadChronometer() {
+            const savedTime = JSON.parse(localStorage.getItem('chronometerTime'));
+            const wasRunning = JSON.parse(localStorage.getItem('chronometerRunning'));
+            if (savedTime) {
+                chronometerTime = savedTime;
+                updateChronometerDisplay();
+            }
+            if (wasRunning) startChronometer();
+        }
+
+        window.addEventListener("beforeunload", () => {
+            return 'Your data will be saved automatically.';
+        });
+    </script>
+</body>
+</html>
